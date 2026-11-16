@@ -1,0 +1,41 @@
+name: Atualizar dados do Sleeper
+
+on:
+  schedule:
+    - cron: '7 * * * *'   # de hora em hora (horário UTC)
+  workflow_dispatch:       # permite rodar na mão em Actions → "Run workflow"
+  push:                    # roda também quando o código ou a tabela de referência mudam
+    branches: [main]
+    paths: ['scripts/**', 'lib/**', '.github/workflows/**', 'data/referencia.json']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-dados
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Buscar dados no Sleeper e salvar
+        run: |
+          git config user.name "central-fantasy-bot"
+          git config user.email "actions@users.noreply.github.com"
+          for i in 1 2 3; do
+            git fetch origin main && git reset --hard origin/main
+            node scripts/update-data.mjs
+            git add data/
+            if git diff --cached --quiet; then echo "Nada mudou"; exit 0; fi
+            git commit -m "Dados do Sleeper atualizados" && git push origin HEAD:main && exit 0
+            echo "Alguém gravou ao mesmo tempo; tentando de novo"; sleep 10
+          done
+          exit 1

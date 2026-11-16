@@ -1,0 +1,7 @@
+{
+  "name": "central-fantasy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Central Fantasy: painel gratuito para ligas de fantasy do Sleeper, em português."
+}
