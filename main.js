@@ -1,7 +1,34 @@
 // Central Fantasy — conectar com o usuário do Sleeper, escolher ligas e carregar o painel.
 // Sem cadastro: o usuário e as ligas ficam guardados só no navegador da pessoa.
 import { SLEEPER, fetchLeague, fetchNews } from './lib/build.js';
-import { mountDashboard, setNews, setBancada, dashboardError } from './dashboard.js';
+import { mountDashboard, setNews, setBancada, dashboardError, setMenu } from './dashboard.js';
+
+/* ---------- app instalável ---------- */
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+const ua = navigator.userAgent || '';
+const install = {
+  ios: /iPhone|iPad|iPod/i.test(ua),
+  mobile: /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || matchMedia('(max-width: 720px)').matches,
+  standalone: matchMedia('(display-mode: standalone)').matches || navigator.standalone === true,
+  can: false, prompt: null,
+};
+let deferred = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferred = e; install.can = true;
+  install.prompt = async () => { if (!deferred) return; deferred.prompt(); try { await deferred.userChoice; } catch { /* */ } deferred = null; install.can = false; refreshMenu(); };
+  refreshMenu();
+});
+window.addEventListener('appinstalled', () => { install.standalone = true; refreshMenu(); });
+function refreshMenu() {
+  if (!current) return;
+  const items = [
+    { label: 'Minhas ligas', run: () => { clearInterval(timer); connectView(current); } },
+    { label: 'Atualizar agora', run: () => load(current, true) },
+  ];
+  if (!install.standalone) items.push({ label: install.can ? 'Instalar o app' : 'Como instalar o app', run: () => { if (install.can) install.prompt(); else { try { localStorage.removeItem('cf_install_ok'); } catch { /* */ } install.mobile = true; location.hash = '#resumo'; refreshMenu(); } } });
+  items.push({ label: `Sair (${current.display || current.username})`, run: logout });
+  setMenu(items, install);
+}
 
 const REFRESH_MIN = 5;
 const KEY = 'cf_conexao';
@@ -27,6 +54,7 @@ const store = {
 /* ---------- tela de conexão ---------- */
 function connectView(prev) {
   $app.classList.add('hidden'); $auth.classList.remove('hidden');
+  document.getElementById('bnav').classList.add('hidden'); document.getElementById('sheet').classList.add('hidden');
   const err = h('div', { class: 'err' });
   const input = h('input', { name: 'sleeper', placeholder: 'ex.: jimmyblunt420', value: prev?.username || '', autocomplete: 'username', autocapitalize: 'none', spellcheck: 'false', required: true });
   const remember = h('input', { type: 'checkbox', id: 'lembrar', checked: prev ? !!prev.remember : true });
@@ -113,7 +141,7 @@ function dashboardView(conn) {
   load(conn, false);
   clearInterval(timer);
   timer = setInterval(() => { if (document.visibilityState === 'visible') { dashboardView.last = Date.now(); load(conn, true); } }, REFRESH_MIN * 60000);
-  current = conn; dashboardView.last = Date.now();
+  current = conn; dashboardView.last = Date.now(); refreshMenu();
   if (!dashboardView.hooked) {
     dashboardView.hooked = true;
     document.addEventListener('visibilitychange', () => {

@@ -2,10 +2,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Central Fantasy — seu painel do Sleeper em português</title>
 <meta name="description" content="Painel gratuito para ligas de fantasy football do Sleeper, em português: escalação ideal, waivers, trocas, lesões e notícias.">
 <meta name="theme-color" content="#0f1217">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" href="./icons/favicon-64.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="CZs Fantasy">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./styles.css">
@@ -36,9 +43,12 @@ form.f label.check input,.lg-opt input{width:auto;margin:0}
   </div>
   <nav class="tabs" id="tabs"></nav>
   <div class="bar" id="bar"></div>
+  <div id="alertbar"></div>
   <main id="main"><div class="empty">Carregando suas ligas…</div></main>
   <div class="foot">Dados públicos do Sleeper (projeções e pontos em PPR), atualizados a cada 5 minutos com o site aberto. Notícias: RotoWire, FantasyPros e RotoBaller, via Sleeper. Análises de analistas com link para os posts originais. As sugestões são automáticas e servem de apoio: a decisão final é sua. Site sem vínculo com o Sleeper.</div>
 </div>
+<nav class="bnav hidden" id="bnav" aria-label="Navegação"></nav>
+<div class="sheet hidden" id="sheet"></div>
 <script type="module" src="./main.js"></script>
 </body>
 </html>
