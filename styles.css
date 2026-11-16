@@ -85,3 +85,6 @@ button.ghost{font:inherit;font-size:12px;border:1px solid var(--line);background
 .lg-name{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .foot{margin-top:28px;font-size:12px;color:var(--muted)}
 .err{color:var(--danger);font-size:13px}
+/* FLEX: um terço de cada cor das posições elegíveis (RB, WR, TE) */
+.pos.FLEX{background:linear-gradient(90deg,#d9f0e4 0 33.33%,#dbe8fb 33.33% 66.67%,#fbe8d4 66.67% 100%);color:#1f2a37}
+@media (prefers-color-scheme: dark){.pos.FLEX{background:linear-gradient(90deg,#173226 0 33.33%,#192a44 33.33% 66.67%,#3a2814 66.67% 100%);color:#e8edf3}}
