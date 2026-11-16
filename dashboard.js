@@ -101,11 +101,13 @@ const selLeagues=()=>LEAGUES.filter(k=>S.leagues[k]&&(S.league==='all'||S.league
 
 /* ---------- views ---------- */
 function vResumo(){
-  const root=h('div');
+  const out=h('div',{class:'resumo'});
   const all=LEAGUES.flatMap(leagueAlerts).sort((a,b)=>({danger:0,warn:1,info:2}[a.lv]-{danger:0,warn:1,info:2}[b.lv]));
-  const inst=installCard();if(inst)root.append(inst);
-  root.append(h('h2',{class:'sec',style:'margin-top:4px'},`Alertas para a semana ${weekNo()}`));
+  const inst=installCard();if(inst)out.append(h('div',{class:'r-inst'},inst));
+  let root=h('div',{class:'r-al'});out.append(root);
+  root.append(h('h2',{class:'sec'},`Alertas para a semana ${weekNo()}`));
   root.append(all.length?h('div',null,all.map(alertEl)):h('div',{class:'alert a-ok'},h('span',{class:'tag'},'OK'),h('div',null,'Nenhum problema nas suas escalações.')));
+  root=h('div',{class:'r-lg'});out.append(root);
   root.append(h('h2',{class:'sec'},'Suas ligas'));
   root.append(h('div',{class:'grid g3'},LEAGUES.filter(k=>S.leagues[k]).map(k=>{
     const L=S.leagues[k];const me=myTeam(L);if(!me)return null;const st=standings(L);const rank=st.findIndex(t=>t.rid===me.rid)+1;const opt=optimize(L,me);const al=leagueAlerts(k);
@@ -124,9 +126,10 @@ function vResumo(){
       h('div',{class:'kv'},h('span',null,'Alertas'),h('b',{class:al.some(a=>a.lv==='danger')?'lose':''},String(al.length)))
     )})));
   const ex=exposure();
+  root=h('div',{class:'r-ex'});out.append(root);
   root.append(h('h2',{class:'sec'},'Exposição: jogadores em mais de uma liga'));
   root.append(ex.length?h('div',{class:'card tbl'},h('table',null,h('thead',null,h('tr',null,h('th',null,'Jogador'),h('th',null,'Ligas'),h('th',{class:'r'},'Proj.'))),h('tbody',null,ex.map(({p,v})=>h('tr',null,h('td',null,pcell(p,p.pos)),h('td',null,v.map(x=>h('span',{class:'chip '+(x.st?'b':'')},(SHORT(x.k))+(x.st?' · titular':'')))),h('td',{class:'r'},f1(proj(p)))))))):h('div',{class:'empty'},'Nenhum jogador repetido.'));
-  return root;
+  return out;
 }
 
 function vEscalacao(){

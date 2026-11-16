@@ -153,4 +153,8 @@ button.ghost{font:inherit;font-size:12px;border:1px solid var(--line);background
   .sheet-item{display:block;width:100%;text-align:left;font:inherit;font-size:16px;font-weight:500;color:var(--ink);background:none;border:0;text-decoration:none;padding:14px 10px;border-radius:10px;cursor:pointer}
   .sheet-item.on{background:var(--accent-soft);color:var(--accent)}
   .sheet-sep{height:1px;background:var(--line);margin:6px 0}
+  /* Início no celular: suas ligas primeiro, depois alertas e exposição */
+  .resumo{display:flex;flex-direction:column}
+  .r-inst{order:0}.r-lg{order:1}.r-al{order:2}.r-ex{order:3}
+  .r-lg h2.sec{margin-top:4px}
 }
