@@ -24,7 +24,7 @@ const tracked = Object.entries(players)
   .slice(0, 450).map(([id]) => id);
 
 const SRC = { rotowire: 'RotoWire', fantasy_pros: 'FantasyPros', rotoballer: 'RotoBaller' };
-const KEEP_DAYS = 5, PER_PLAYER = 2;
+const KEEP_DAYS = 4, PER_PLAYER = 1;
 const cut = Date.now() - KEEP_DAYS * 864e5;
 const fresh = [];
 for (let i = 0; i < tracked.length; i += 15) {
